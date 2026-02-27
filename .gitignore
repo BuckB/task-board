@@ -1,0 +1,30 @@
+# --- System Files ---
+.DS_Store
+Thumbs.db
+
+# --- Dependencies ---
+node_modules/
+.pnpm-debug.log
+
+# --- Build Outputs ---
+dist/
+.angular/
+out-tsc/
+bazel-out/
+
+# --- Environment & Secrets (CRITICAL) ---
+.env
+.env.test
+.env.local
+.env.*.local
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Infrastructure / Databases ---
+data/
+*.log
+podman-machine-*
