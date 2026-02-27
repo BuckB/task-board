@@ -1,0 +1,7 @@
+packages:
+  - frontend
+  - backend
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - unrs-resolver
