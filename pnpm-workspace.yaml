@@ -5,3 +5,6 @@ packages:
 onlyBuiltDependencies:
   - '@nestjs/core'
   - unrs-resolver
+overrides:
+  ajv@>=7.0.0-alpha.0 <8.18.0: '>=8.18.0'
+  file-type@>=13.0.0 <21.3.1: '>=21.3.1'
