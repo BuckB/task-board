@@ -28,3 +28,4 @@ bazel-out/
 data/
 *.log
 podman-machine-*
+postgres-data/
