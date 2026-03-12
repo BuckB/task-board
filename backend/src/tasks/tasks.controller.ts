@@ -1,13 +1,20 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateTaskDto } from './task/dto/create-task.dto';
-import type { Task } from './task/task.interface';
+import type { Task } from './task/task.entity';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
+
     constructor(private taskService: TasksService) {}
+
     @Post()
-    createTask(@Body() createTaskDto: CreateTaskDto): Task {
-        return this.taskService.createTask(createTaskDto);
+    async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+        return await this.taskService.createTask(createTaskDto);
+    }
+
+    @Get()
+    async getAllTasks(): Promise<Task[]> {
+        return await this.taskService.getAllTasks();
     }
 }
