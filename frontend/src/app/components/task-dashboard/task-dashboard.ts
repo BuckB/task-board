@@ -1,11 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Task } from '../../models/task.model';
+import { TaskService } from '../../services/task/task.service';
 
 @Component({
   selector: 'app-task-dashboard',
-  imports: [],
+  standalone: true,
   templateUrl: './task-dashboard.html',
   styleUrl: './task-dashboard.scss',
 })
-export class TaskDashboard {
+
+export class TaskDashboard implements OnInit {
   title = 'Task Board';
+  tasks: Task[] = [];
+
+  private taskService: TaskService = inject(TaskService);
+
+  ngOnInit(): void {
+    this.taskService.getTasks().subscribe((data) => {
+      this.tasks = data;
+    });
+  }
 }
