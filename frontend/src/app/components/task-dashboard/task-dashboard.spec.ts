@@ -42,4 +42,13 @@ describe('TaskDashboard', () => {
     fixture.detectChanges();
     expect(mockTaskService.getTasks).toHaveBeenCalled();
   });
+
+  it('should display the correct number of tasks', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const taskItems = compiled.querySelectorAll('.task-item');
+    expect(taskItems.length).toBe(2);
+    expect(taskItems[0].textContent).toContain('Task 1');
+    expect(taskItems[1].textContent).toContain('Task 2');
+  });
 });

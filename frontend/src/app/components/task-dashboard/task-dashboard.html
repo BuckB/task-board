@@ -1,1 +1,13 @@
 <h1>{{title}}</h1>
+
+<div class="task-list">
+    @for (task of tasks; track task.id) {
+    <div class="task-item">
+        <h3>{{task.title}}</h3>
+        <p>{{task.description}}</p>
+        <span class="status">{{task.status}}</span>
+    </div>
+    } @empty {
+    <p>No tasks found.</p>
+    }
+</div>
