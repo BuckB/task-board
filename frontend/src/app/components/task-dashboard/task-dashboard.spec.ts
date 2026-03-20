@@ -67,4 +67,16 @@ describe('TaskDashboard', () => {
     expect(mockTaskService.createTask).toHaveBeenCalledWith(newTask);
     expect(component.tasks).toContain(savedTask);
   });
+
+  it('should have a form with title and description inputs', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const titleInput = compiled.querySelector('input[formControlName="title"]');
+    const descInput = compiled.querySelector('textarea[formControlName="description"]');
+    const submitBtn = compiled.querySelector('button[type="submit"]');
+
+    expect(titleInput).toBeTruthy();
+    expect(descInput).toBeTruthy();
+    expect(submitBtn).toBeTruthy();
+  });
 });
