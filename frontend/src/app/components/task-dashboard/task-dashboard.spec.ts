@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TaskService } from '../../services/task/task.service';
 import { TaskDashboard } from './task-dashboard';
+import { Task } from '../../models/task.model';
 
 describe('TaskDashboard', () => {
   let component: TaskDashboard;
@@ -50,5 +51,20 @@ describe('TaskDashboard', () => {
     expect(taskItems.length).toBe(2);
     expect(taskItems[0].textContent).toContain('Task 1');
     expect(taskItems[1].textContent).toContain('Task 2');
+  });
+
+  it('should call createTask on the service and add the new task to the list', () => {
+    // Arrange
+    const newTask: Task = { title: 'TDD addTask', description: 'Testing addTask', status: 'To Do' } as Task;
+    const savedTask: Task = { id: 3, ...newTask };
+
+    mockTaskService.createTask = vi.fn().mockReturnValue(of(savedTask));
+
+    // Act
+    component.addTask(newTask);
+
+    // Assert
+    expect(mockTaskService.createTask).toHaveBeenCalledWith(newTask);
+    expect(component.tasks).toContain(savedTask);
   });
 });

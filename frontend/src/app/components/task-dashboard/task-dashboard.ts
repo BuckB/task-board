@@ -20,4 +20,10 @@ export class TaskDashboard implements OnInit {
       this.tasks = data;
     });
   }
+
+  addTask(newTask: Task): void {
+    this.taskService.createTask(newTask).subscribe((savedTask) => {
+      this.tasks = [...this.tasks, savedTask];
+    });
+  }
 }

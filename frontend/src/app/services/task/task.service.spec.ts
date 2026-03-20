@@ -43,4 +43,18 @@ describe('TaskService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockTasks); // Resolve the request with mock data
   });
+
+  it('should send a POST request to create a new task', () => {
+    const newTask: Task = { title: 'TDD Task', description: 'Testing POST', status: 'To Do' } as Task;
+    const mockResponse: Task = { id: 3, ...newTask };
+
+    service.createTask(newTask).subscribe((task: Task) => {
+      expect(task).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne('http://localhost:3000/tasks');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(newTask);
+    req.flush(mockResponse); // Resolve the request with mock data
+  });
 });
