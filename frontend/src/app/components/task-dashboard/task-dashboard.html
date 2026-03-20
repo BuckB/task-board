@@ -1,5 +1,25 @@
 <h1>{{title}}</h1>
 
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
+    <div class="form-group">
+        <label for="title">Task Title</label>
+        <input id="title" formControlName="title" placeholder="Enter task title" class="form-input" />
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" placeholder="Enter task description" class="form-textarea"></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="status">Status</label>
+        <input id="status" formControlName="status" [readonly]="true" class="form-input readonly" />
+    </div>
+    
+    <button type="submit" [disabled]="taskForm.invalid" class="submit-btn">Add Task</button>
+</form>
+
+<hr />
 <div class="task-list">
     @for (task of tasks; track task.id) {
     <div class="task-item">

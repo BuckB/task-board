@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { TaskService } from '../../services/task/task.service';
 
@@ -7,6 +8,7 @@ import { TaskService } from '../../services/task/task.service';
   standalone: true,
   templateUrl: './task-dashboard.html',
   styleUrl: './task-dashboard.scss',
+  imports: [ReactiveFormsModule]
 })
 
 export class TaskDashboard implements OnInit {
@@ -19,6 +21,20 @@ export class TaskDashboard implements OnInit {
     this.taskService.getTasks().subscribe((data) => {
       this.tasks = data;
     });
+  }
+
+  taskForm = new FormGroup({
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    status: new FormControl('Backlog', { nonNullable: true })
+  });
+
+  onSubmit(): void {
+    if (this.taskForm.valid) {
+      const newTask: Task = this.taskForm.getRawValue() as Task;
+      this.addTask(newTask);
+      this.taskForm.reset({ status: 'Backlog' });
+    }
   }
 
   addTask(newTask: Task): void {
