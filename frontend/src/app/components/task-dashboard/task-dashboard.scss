@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $primary-blue: #4299e1; // Default "To Do" color
 $border-color: #ddd; // Light gray for borders
 $button-bg: #4299e1; // Primary button background color
@@ -63,7 +65,7 @@ h1 {
       font-size: 0.95rem;
 
       &:hover:not(:disabled) {
-        background-color: darken($color: $button-bg, $amount: 15%);
+        background-color: color.adjust($button-bg, $lightness: -15%);
       }
 
       &:disabled {
@@ -128,8 +130,8 @@ h1 {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: darken($primary-blue, 10%);
-    background-color: lighten($primary-blue, 35%);
+    color: color.adjust($primary-blue, $lightness: -10%);
+    background-color: color.adjust($primary-blue, $lightness: 35%);
     align-self: flex-end;
   }
 }
