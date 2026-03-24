@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { TaskService } from '../../services/task/task.service';
@@ -13,13 +13,18 @@ import { TaskService } from '../../services/task/task.service';
 
 export class TaskDashboard implements OnInit {
   title = 'Task Board';
-  tasks: Task[] = [];
+  tasks = signal<Task[]>([]);
 
   private taskService: TaskService = inject(TaskService);
 
   ngOnInit(): void {
-    this.taskService.getTasks().subscribe((data) => {
-      this.tasks = data;
+    this.taskService.getTasks().subscribe({
+      next: (data) => {
+        this.tasks.set(data);
+      },
+      error: (err) => {
+        console.error('Error fetching tasks:', err);
+      }
     });
   }
 
@@ -39,7 +44,7 @@ export class TaskDashboard implements OnInit {
 
   addTask(newTask: Task): void {
     this.taskService.createTask(newTask).subscribe((savedTask) => {
-      this.tasks = [...this.tasks, savedTask];
+      this.tasks.update((currentTasks) => [...currentTasks, savedTask]);
     });
   }
 }
