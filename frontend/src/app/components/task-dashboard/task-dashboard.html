@@ -9,7 +9,7 @@
 </section>
 
 <div class="task-grid">
-    @for (task of tasks; track task.id) {
+    @for (task of tasks(); track task.id) {
     <article class="task-item">
         <h3>{{ task.title }}</h3>
         <p>{{ task.description }}</p>
