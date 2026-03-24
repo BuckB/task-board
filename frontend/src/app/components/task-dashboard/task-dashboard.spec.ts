@@ -79,4 +79,10 @@ describe('TaskDashboard', () => {
     expect(descInput).toBeTruthy();
     expect(submitBtn).toBeTruthy();
   });
+
+  it('should have a grid container for tasks', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.task-grid')).toBeTruthy();
+  });
 });
