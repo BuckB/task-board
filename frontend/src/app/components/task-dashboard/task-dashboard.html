@@ -13,7 +13,12 @@
     <article class="task-item">
         <h3>{{ task.title }}</h3>
         <p>{{ task.description }}</p>
-        <span class="status">{{ task.status }}</span>
+        <div class="task-footer">
+            @if (task.id) {
+                <button class="delete-btn" (click)="onDeleteTask(task.id)">Delete</button>
+            }
+            <span class="status">{{ task.status }}</span>
+        </div>
     </article>
     } @empty {
     <p class="empty-state">No tasks found. Start by creating one above!</p>

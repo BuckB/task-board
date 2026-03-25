@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Task } from '../../models/task.model';
+import { CreateTaskDTO, Task } from '../../models/task.model';
 import { TaskService } from '../../services/task/task.service';
 
 @Component({
@@ -22,9 +22,7 @@ export class TaskDashboard implements OnInit {
       next: (data) => {
         this.tasks.set(data);
       },
-      error: (err) => {
-        console.error('Error fetching tasks:', err);
-      }
+      error: (err) => console.error('Error fetching tasks:', err)
     });
   }
 
@@ -42,9 +40,18 @@ export class TaskDashboard implements OnInit {
     }
   }
 
-  addTask(newTask: Task): void {
+  addTask(newTask: CreateTaskDTO): void {
     this.taskService.createTask(newTask).subscribe((savedTask) => {
       this.tasks.update((currentTasks) => [...currentTasks, savedTask]);
+    });
+  }
+
+  onDeleteTask(id: number): void {
+    this.taskService.deleteTask(id).subscribe({
+      next: () => {
+        this.tasks.update((currentTasks) => currentTasks.filter(task => task.id !== id));
+      },
+      error: (err) => console.error('Error deleting task:', err)
     });
   }
 }
