@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskService } from './task.service';
-import { Task } from '../../models/task.model';
+import { CreateTaskDTO, Task } from '../../models/task.model';
 
 describe('TaskService', () => {
   let service: TaskService;
@@ -45,8 +45,8 @@ describe('TaskService', () => {
   });
 
   it('should send a POST request to create a new task', () => {
-    const newTask: Task = { title: 'TDD Task', description: 'Testing POST', status: 'To Do' } as Task;
-    const mockResponse: Task = { id: 3, ...newTask };
+    const newTask: CreateTaskDTO = { title: 'TDD addTask', description: 'Testing POST', status: 'To Do' } as CreateTaskDTO;
+    const mockResponse: Task = { id: 99, ...newTask };
 
     service.createTask(newTask).subscribe((task: Task) => {
       expect(task).toEqual(mockResponse);
@@ -56,5 +56,15 @@ describe('TaskService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newTask);
     req.flush(mockResponse); // Resolve the request with mock data
+  });
+
+  it('should send a DELETE request to the correct URL', () => {
+    const taskId = 1;
+
+    service.deleteTask(taskId).subscribe();
+
+    const req = httpMock.expectOne(`http://localhost:3000/tasks/${taskId}`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null); // Backend usually returns 204 No Content
   });
 });

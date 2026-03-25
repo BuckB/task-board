@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Task } from '../../models/task.model';
+import { CreateTaskDTO, Task } from '../../models/task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,11 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
-  createTask(task: Task): Observable<Task> {
+  createTask(task: CreateTaskDTO): Observable<Task> {
     return this.http.post<Task>(this.apiUrl, task);
+  }
+
+  deleteTask(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

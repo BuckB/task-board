@@ -123,8 +123,13 @@ h1 {
     margin: 0 0 0.75rem 0;
   }
 
+  .task-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .status {
-    display: inline-block;
+    // display: inline-block;
     padding: 0.25em 0.75em;
     border-radius: 20px;
     font-size: 0.75rem;
@@ -133,5 +138,28 @@ h1 {
     color: color.adjust($primary-blue, $lightness: -10%);
     background-color: color.adjust($primary-blue, $lightness: 35%);
     align-self: flex-end;
+  }
+
+  .delete-btn {
+    padding: 0.4rem 0.8rem;
+    background-color: transparent;
+    color: #e53e3e; // Red-600
+    border: 1px solid #feb2b2;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    align-self: flex-start;
+
+    &:hover {
+      background-color: #fff5f5;
+      border-color: #e53e3e;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 }
