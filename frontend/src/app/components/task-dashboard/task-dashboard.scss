@@ -140,15 +140,18 @@ h1 {
     align-self: flex-end;
   }
 
-  .delete-btn {
+  .btn {
     padding: 0.4rem 0.8rem;
-    background-color: transparent;
-    color: #e53e3e; // Red-600
-    border: 1px solid #feb2b2;
     border-radius: 14px;
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
+  }
+
+  .delete-btn {
+    background-color: transparent;
+    color: #e53e3e; // Red-600
+    border: 1px solid #feb2b2;
     transition: all 0.2s;
     align-self: flex-start;
 

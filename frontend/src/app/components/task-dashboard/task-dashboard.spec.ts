@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { TaskService } from '../../services/task/task.service';
 import { TaskDashboard } from './task-dashboard';
 import { CreateTaskDTO, Task } from '../../models/task.model';
+import { TaskStatus } from '../../models/task-status.enum';
 
 describe('TaskDashboard', () => {
   let component: TaskDashboard;
@@ -55,7 +56,7 @@ describe('TaskDashboard', () => {
 
   it('should call createTask on the service and add the new task to the list', () => {
     // Arrange
-    const newTask: CreateTaskDTO = { title: 'TDD addTask', description: 'Testing POST', status: 'To Do' } as CreateTaskDTO;
+    const newTask: CreateTaskDTO = { title: 'TDD addTask', description: 'Testing POST', status: TaskStatus.TODO } as CreateTaskDTO;
     const savedTask: Task = { id: 99, ...newTask };
 
     mockTaskService.createTask = vi.fn().mockReturnValue(of(savedTask));
@@ -88,7 +89,7 @@ describe('TaskDashboard', () => {
 
   it('should remove a task from the list when deleted', () => {
     // Setup: Component already has 1 task
-    component.tasks.set([{ id: 1, title: 'Delete Me', description: 'I am a task to be deleted', status: 'To Do' }]);
+    component.tasks.set([{ id: 1, title: 'Delete Me', description: 'I am a task to be deleted', status: TaskStatus.TODO }]);
     mockTaskService.deleteTask = vi.fn().mockReturnValue(of(null));
 
     // Act
@@ -97,5 +98,16 @@ describe('TaskDashboard', () => {
     // Assert
     expect(mockTaskService.deleteTask).toHaveBeenCalledWith(1);
     expect(component.tasks().length).toBe(0);
+  });
+
+  it('should update task status in the list', () => {
+    const taskId = 123;
+    component.tasks.set([{ id: taskId, title: 'Test', description: 'This is a test', status: TaskStatus.TODO }]);
+
+    mockTaskService.updateTaskStatus = vi.fn().mockReturnValue(of({ id: taskId, status: TaskStatus.DONE }));
+
+    component.changeStatus(taskId, TaskStatus.DONE);
+
+    expect(component.tasks()[0].status).toBe(TaskStatus.DONE);
   });
 });
