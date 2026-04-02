@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Task } from './task/task.entity';
 import { TasksService } from './tasks.service';
+import { TaskStatus } from './task/task-status.enum';
 
 describe('TasksService', () => {
   let service: TasksService;
@@ -50,8 +51,8 @@ describe('TasksService', () => {
 
   it('should call repository.create() and repository.save() to persist a task', async () => {
     //1. Arrange: define the input and what the database should return
-    const createTaskDto = { title: 'Test Title', description: 'Test Description' };
-    const expectedTask = { id: '1', ...createTaskDto, status: 'BACKLOG' };
+    const createTaskDto = { title: 'Test Title', description: 'Test Description', status: TaskStatus.BACKLOG };
+    const expectedTask = { id: '1', ...createTaskDto };
     repository.create.mockReturnValue(expectedTask);
     repository.save.mockResolvedValue(expectedTask);
     //2. Act: call the service method

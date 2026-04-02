@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { CreateTaskDTO, Task } from '../../models/task.model';
+import { TaskStatus } from '../../models/task-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -21,5 +22,9 @@ export class TaskService {
 
   deleteTask(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  updateTaskStatus(id: number, status: TaskStatus): Observable<Task> {
+    return this.http.patch<Task>(`${this.apiUrl}/${id}`, { status });
   }
 }
