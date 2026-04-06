@@ -1,15 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { of } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { TaskStatus } from '../../models/task-status.enum';
+import { CreateTaskDTO, Task } from '../../models/task.model';
 import { TaskService } from '../../services/task/task.service';
 import { TaskDashboard } from './task-dashboard';
-import { CreateTaskDTO, Task } from '../../models/task.model';
-import { TaskStatus } from '../../models/task-status.enum';
 
 describe('TaskDashboard', () => {
   let component: TaskDashboard;
   let fixture: ComponentFixture<TaskDashboard>;
   let mockTaskService: any;
+  let compiled: HTMLElement;
 
   beforeEach(async () => {
     mockTaskService = {
@@ -28,6 +29,11 @@ describe('TaskDashboard', () => {
 
     fixture = TestBed.createComponent(TaskDashboard);
     component = fixture.componentInstance;
+    compiled = fixture.nativeElement as HTMLElement;
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('should create the task dashboard', () => {
@@ -36,7 +42,6 @@ describe('TaskDashboard', () => {
 
   it('should render the dashboard title "Task Board"', () => {
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Task Board');
   });
 
@@ -47,7 +52,6 @@ describe('TaskDashboard', () => {
 
   it('should display the correct number of tasks', () => {
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
     const taskItems = compiled.querySelectorAll('.task-item');
     expect(taskItems.length).toBe(2);
     expect(taskItems[0].textContent).toContain('Task 1');
@@ -71,7 +75,6 @@ describe('TaskDashboard', () => {
 
   it('should have a form with title and description inputs', () => {
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
     const titleInput = compiled.querySelector('input[formControlName="title"]');
     const descInput = compiled.querySelector('textarea[formControlName="description"]');
     const submitBtn = compiled.querySelector('button[type="submit"]');
@@ -83,7 +86,6 @@ describe('TaskDashboard', () => {
 
   it('should have a grid container for tasks', () => {
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.task-grid')).toBeTruthy();
   });
 
