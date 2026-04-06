@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { routes } from './app.routes';
 import { TaskDashboard } from './components/task-dashboard/task-dashboard';
 
@@ -15,6 +16,10 @@ describe('App Routes', () => {
         }).compileComponents();
 
         router = TestBed.inject(Router);
+    });
+
+    afterEach(() => {
+        TestBed.resetTestingModule();
     });
 
     it('should navigate to "" and load TaskDashboard', async () => {

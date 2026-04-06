@@ -13,8 +13,8 @@ import { TaskStatus } from '../../models/task-status.enum';
 })
 
 export class TaskDashboard implements OnInit {
-  protected title = 'Task Board';
-  protected tasks = signal<Task[]>([]);
+  readonly title = 'Task Board';
+  readonly tasks = signal<Task[]>([]);
   protected TaskStatus = TaskStatus;
 
   private taskService: TaskService = inject(TaskService);

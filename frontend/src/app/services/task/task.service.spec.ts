@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { TaskService } from './task.service';
-import { CreateTaskDTO, Task } from '../../models/task.model';
+import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { TaskStatus } from '../../models/task-status.enum';
+import { CreateTaskDTO, Task } from '../../models/task.model';
+import { TaskService } from './task.service';
 
 describe('TaskService', () => {
   const apiUrl = 'http://localhost:3000/tasks';
   let service: TaskService;
-  let httpMock: HttpTestingController
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,6 +25,7 @@ describe('TaskService', () => {
 
   afterEach(() => {
     httpMock.verify();
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {
@@ -79,6 +80,6 @@ describe('TaskService', () => {
     const req = httpMock.expectOne(`${apiUrl}/${taskId}`);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual({ status: updatedStatus });
-    req.flush( { id: taskId, status: updatedStatus } as Task); // Resolve the request with mock data
+    req.flush({ id: taskId, status: updatedStatus } as Task); // Resolve the request with mock data
   });
 });
