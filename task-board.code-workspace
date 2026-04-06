@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "path": "backend",
+            "name": "backend"
+        },
+        {
+            "path": "frontend",
+            "name": "frontend"
+        }
+    ],
+    "settings": {
+        "js/ts.tsdk.path": "frontend/node_modules/typescript/lib",
+        // Jest Runner / Vitest Runner configuration
+        "jestrunner.enableTestExplorer": true,
+        "jestrunner.useNearestConfig": true,
+        "jestrunner.vitestCommand": "pnpm run test",
+        "jestrunner.vitestConfigPath": "frontend/",
+    }
+}
