@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { TaskStatus } from './task/task-status.enum';
 import { Task } from './task/task.entity';
 import { TasksService } from './tasks.service';
-import { TaskStatus } from './task/task-status.enum';
 
 describe('TasksService', () => {
   let service: TasksService;
@@ -14,6 +14,7 @@ describe('TasksService', () => {
     create: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
+    preload: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -74,5 +75,39 @@ describe('TasksService', () => {
     await service.remove(uuid);
 
     expect(repository.delete).toHaveBeenCalledWith(uuid);
+  });
+
+  it('should find a task, update its status and return it', async () => {
+    const id = 'uuid-123';
+    const newStatus = TaskStatus.DONE;
+    const preloadedTask = { id, title: 'Test Update', status: TaskStatus.TODO } as Task;
+    const updatedTask = { ...preloadedTask, status: newStatus } as Task;
+
+    // 1. Arrange
+    repository.preload.mockResolvedValue(updatedTask); // Simulate preload merging the status
+    repository.save.mockResolvedValue(updatedTask);
+
+    // 2. Act
+    const result = await service.updateStatus(id, newStatus);
+
+    // 3. Assert
+    expect(repository.preload).toHaveBeenCalledWith({ id, status: newStatus });
+    expect(repository.save).toHaveBeenCalledWith(updatedTask);
+    expect(result.status).toBe(newStatus);
+  });
+
+  it('should throw an error if task to update is not found', async () => {
+    repository.preload.mockResolvedValue(null);
+
+    await expect(service.updateStatus('invalid-id', TaskStatus.DONE))
+      .rejects.toThrow();
+  });
+
+  it('should throw an error if the task status is invalid', async () => {
+    const id = 'uuid-123';
+    const invalidStatus = 'INVALID_STATUS' as TaskStatus;
+
+    await expect(service.updateStatus(id, invalidStatus))
+      .rejects.toThrow();
   });
 });

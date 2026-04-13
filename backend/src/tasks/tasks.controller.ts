@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { CreateTaskDto } from './task/dto/create-task.dto';
+import { UpdateTaskStatusDto } from './task/dto/update-task-status.dto';
 import type { Task } from './task/task.entity';
 import { TasksService } from './tasks.service';
 
@@ -21,5 +22,12 @@ export class TasksController {
     @Delete(':id')
     async remove(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.tasksService.remove(id);
+    }
+
+    @Patch(':id/status') update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() updateTaskStatusDto: UpdateTaskStatusDto
+    ) {
+        return this.tasksService.updateStatus(id, updateTaskStatusDto.status);
     }
 }
