@@ -3,18 +3,21 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "target": "es2024",
+    "module": "preserve",
+    "isolatedModules": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "ES2023",
-    "module": "preserve",
-    "typeRoots": ["./node_modules/@types", "./node_modules"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
