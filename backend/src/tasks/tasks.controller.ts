@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
-import { CreateTaskDto } from './task/dto/create-task.dto';
-import { UpdateTaskStatusDto } from './task/dto/update-task-status.dto';
-import type { Task } from './task/task.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
+import type { Task } from './model/task.entity';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
 
-    constructor(private tasksService: TasksService) { }
+    constructor(private tasksService: TasksService) {}
 
     @Post()
     async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
@@ -15,8 +15,8 @@ export class TasksController {
     }
 
     @Get()
-    async getAllTasks(): Promise<Task[]> {
-        return await this.tasksService.getAllTasks();
+    async findAllTasks(): Promise<Task[]> {
+        return await this.tasksService.findAllTasks();
     }
 
     @Delete(':id')
@@ -24,10 +24,10 @@ export class TasksController {
         return this.tasksService.remove(id);
     }
 
-    @Patch(':id/status') update(
+    @Patch(':id') update(
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() updateTaskStatusDto: UpdateTaskStatusDto
     ) {
-        return this.tasksService.updateStatus(id, updateTaskStatusDto.status);
+        return this.tasksService.updateStatus(id, updateTaskStatusDto.statusId);
     }
 }

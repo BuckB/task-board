@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import databaseConfig from './config/database.config';
+import { StatusModule } from './status/status.module';
 import { TasksModule } from './tasks/tasks.module';
 
 @Module({
@@ -23,8 +24,9 @@ import { TasksModule } from './tasks/tasks.module';
       } as TypeOrmModuleOptions),
     }),
     TasksModule,
+    StatusModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,12 +1,16 @@
+import { StatusModule } from '@app/status/status.module';
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Task } from './model/task.entity';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
-import { Task } from './task/task.entity';
-import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task])],
+  imports: [
+    TypeOrmModule.forFeature([Task]),
+    StatusModule
+  ],
   controllers: [TasksController],
   providers: [TasksService]
 })
-export class TasksModule { }
+export class TasksModule {}

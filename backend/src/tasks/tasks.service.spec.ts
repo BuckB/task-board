@@ -1,12 +1,14 @@
+import { Status } from '@app/status/model/status.entity';
+import { StatusService } from '@app/status/status.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TaskStatus } from './task/task-status.enum';
-import { Task } from './task/task.entity';
+import { Task } from './model/task.entity';
 import { TasksService } from './tasks.service';
 
 describe('TasksService', () => {
   let service: TasksService;
   let repository;
+  let statusService;
 
   const mockTaskRepository = () => ({
     find: jest.fn(),
@@ -15,6 +17,10 @@ describe('TasksService', () => {
     save: jest.fn(),
     delete: jest.fn(),
     preload: jest.fn(),
+  });
+
+  const mockStatusService = () => ({
+    findById: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -27,11 +33,16 @@ describe('TasksService', () => {
           // "...give them our Mock instead."
           useFactory: mockTaskRepository,
         },
+        {
+          provide: StatusService,
+          useFactory: mockStatusService,
+        }
       ]
     }).compile();
 
     service = module.get<TasksService>(TasksService);
     repository = module.get(getRepositoryToken(Task));
+    statusService = module.get<StatusService>(StatusService);
   });
 
   it('should be defined', () => {
@@ -43,26 +54,44 @@ describe('TasksService', () => {
     const expectedTasks = [{ id: '1', title: 'Test Task', description: 'Test Description' }];
     repository.find.mockResolvedValue(expectedTasks);
     //2. Act: call the service method
-    const result = await service.getAllTasks();
+    const result = await service.findAllTasks();
     //3. Assert: check that the result is what we expect
     expect(repository.find).toHaveBeenCalled();
     expect(result).toEqual(expectedTasks);
 
   });
 
-  it('should call repository.create() and repository.save() to persist a task', async () => {
+  it('should call repository.findOneBy() with a string UUID and return a task', async () => {
+    const uuid = 'task-uuid-123';
+    const expectedTask = { id: uuid, title: 'Test Task', description: 'Test Description' };
+    repository.findOneBy.mockResolvedValue(expectedTask);
+
+    const result = await service.findTaskById(uuid);
+
+    expect(repository.findOneBy).toHaveBeenCalledWith({ id: uuid });
+    expect(result).toEqual(expectedTask);
+   });
+
+  it('should create a task by looking up the status entity', async () => {
     //1. Arrange: define the input and what the database should return
-    const createTaskDto = { title: 'Test Title', description: 'Test Description', status: TaskStatus.BACKLOG };
-    const expectedTask = { id: '1', ...createTaskDto };
+    const statusId = 'status-uuid-123';
+    const mockStatus = { id: statusId, name: 'BACKLOG', color: 'mock-color', orderIndex: 0 } as Status;
+    const createTaskDto = { title: 'Test Title', description: 'Test Description', statusId: statusId };
+    const expectedTask = { id: 'task-uuid-345', ...createTaskDto, status: mockStatus };
+
+    statusService.findById.mockResolvedValue(mockStatus);
     repository.create.mockReturnValue(expectedTask);
     repository.save.mockResolvedValue(expectedTask);
+
     //2. Act: call the service method
     const result = await service.createTask(createTaskDto);
+
     //3. Assert: check that the repository methods were called correctly and the result is as expected
+    expect(statusService.findById).toHaveBeenCalledWith(statusId);
     expect(repository.create).toHaveBeenCalledWith({
       title: createTaskDto.title,
       description: createTaskDto.description,
-      status: 'BACKLOG',
+      status: mockStatus,
     });
     expect(repository.save).toHaveBeenCalledWith(expectedTask);
     expect(result).toEqual(expectedTask);
@@ -78,36 +107,47 @@ describe('TasksService', () => {
   });
 
   it('should find a task, update its status and return it', async () => {
-    const id = 'uuid-123';
-    const newStatus = TaskStatus.DONE;
-    const preloadedTask = { id, title: 'Test Update', status: TaskStatus.TODO } as Task;
-    const updatedTask = { ...preloadedTask, status: newStatus } as Task;
+    const taskId = 'task-uuid-123';
+    const statusId = 'new-status-uuid';
+    const mockStatus = { id: statusId, name: 'IN_PROGRESS' } as Status;
+    const updatedTask = { id: taskId, title: 'Test Update', status: mockStatus } as Task;
 
     // 1. Arrange
+    statusService.findById.mockResolvedValue(mockStatus);
     repository.preload.mockResolvedValue(updatedTask); // Simulate preload merging the status
     repository.save.mockResolvedValue(updatedTask);
 
     // 2. Act
-    const result = await service.updateStatus(id, newStatus);
+    const result = await service.updateStatus(taskId, statusId);
 
     // 3. Assert
-    expect(repository.preload).toHaveBeenCalledWith({ id, status: newStatus });
+    expect(statusService.findById).toHaveBeenCalledWith(statusId);
+    expect(repository.preload).toHaveBeenCalledWith({ id: taskId, status: mockStatus });
     expect(repository.save).toHaveBeenCalledWith(updatedTask);
-    expect(result.status).toBe(newStatus);
+    expect(result.status.name).toBe('IN_PROGRESS');
   });
 
   it('should throw an error if task to update is not found', async () => {
     repository.preload.mockResolvedValue(null);
 
-    await expect(service.updateStatus('invalid-id', TaskStatus.DONE))
+    await expect(service.updateStatus('invalid-id', 'status-uuid-123'))
       .rejects.toThrow();
   });
 
   it('should throw an error if the task status is invalid', async () => {
-    const id = 'uuid-123';
-    const invalidStatus = 'INVALID_STATUS' as TaskStatus;
+    statusService.findById.mockResolvedValue(null); // Simulate invalid status ID
 
-    await expect(service.updateStatus(id, invalidStatus))
+    await expect(service.updateStatus('task-uuid-123', 'invalid-status-id'))
       .rejects.toThrow();
+  });
+
+  it('should throw an error if the statusId does not exist', async () => {
+    statusService.findById.mockResolvedValue(null);
+
+    await expect(service.createTask({
+      title: 'Fail',
+      description: 'This should fail',
+      statusId: 'invalid-id'
+    })).rejects.toThrow();
   });
 });
