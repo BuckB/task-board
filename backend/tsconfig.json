@@ -1,32 +1,46 @@
 {
   "compilerOptions": {
+    /* Basic Options */
+    "outDir": "./dist",
+    "rootDir": "./",
+    "sourceMap": true,
+    "incremental": true, // Enable incremental compilation for faster builds in tsbuildinfo files.
+    "target": "es2023",
+    /* Module Options */
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
+    /* Strict Type-Checking Options */
+    "strictNullChecks": true, // added config
+    "noImplicitAny": false, // added config
+    "strictPropertyInitialization": false, // added config
+    "strictBindCallApply": false, // added config
+    /* Additional Checks */
     "declaration": true,
     "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true, // added config
+    "skipLibCheck": true, // added config
+    /* Experimental Options */
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2024",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "strictPropertyInitialization": false,
+    /* Mapping Options */
     "paths": {
       "@config/*": ["./src/config/*"],
       "@app/*": ["./src/*"]
     },
-    "types": ["node", "jest", "express", "supertest"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": [
+      "node",
+      "jest",
+      "express",
+      "supertest"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   }
 }
