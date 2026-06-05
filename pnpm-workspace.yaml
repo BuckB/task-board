@@ -5,9 +5,12 @@ packages:
 allowBuilds:
   '@nestjs/core': true
   '@parcel/watcher': true
+  es5-ext: set this to true or false
   esbuild: true
+  fsevents: set this to true or false
   lmdb: true
   msgpackr-extract: true
+  node-sass: set this to true or false
   unrs-resolver: true
 
 minimumReleaseAgeExclude:
