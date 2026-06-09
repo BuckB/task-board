@@ -1,6 +1,6 @@
 import { Status } from '@app/status/model/status.entity';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { CreateTaskDto } from './model/create-task.dto';
 import { Task } from './model/task.entity';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';

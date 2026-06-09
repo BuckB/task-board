@@ -2,7 +2,7 @@ import { StatusService } from '@app/status/status.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { CreateTaskDto } from './model/create-task.dto';
 import { Task } from './model/task.entity';
 
 @Injectable()

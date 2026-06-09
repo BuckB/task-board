@@ -14,7 +14,7 @@
         // Jest Runner / Vitest Runner configuration
         "jestrunner.enableTestExplorer": true,
         "jestrunner.useNearestConfig": true,
-        "jestrunner.vitestCommand": "pnpm run test --watch=false",
+        "jestrunner.vitestCommand": "pnpm run test",
         "jestrunner.vitestConfigPath": "frontend/",
         "liveServer.settings.multiRootWorkspaceName": "frontend",
     }
