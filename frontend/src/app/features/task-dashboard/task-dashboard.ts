@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { CreateTaskDTO, Task } from '../../models/task.model';
-import { TaskService } from '../../services/task/task.service';
-import { TaskStatus } from '../../models/task-status.enum';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Status } from '@domains/status/model/status.model';
+import { CreateTaskDTO } from '@domains/task/model/create-task.dto';
+import { Task } from '@domains/task/model/task.model';
+import { TaskService } from '@domains/task/services/task.service';
 
 @Component({
   selector: 'app-task-dashboard',
@@ -15,8 +16,7 @@ import { TaskStatus } from '../../models/task-status.enum';
 export class TaskDashboard implements OnInit {
   readonly title = 'Task Board';
   readonly tasks = signal<Task[]>([]);
-  protected TaskStatus = TaskStatus;
-
+  protected TaskStatus: Status = {} as Status;
   private taskService: TaskService = inject(TaskService);
 
   ngOnInit(): void {
@@ -31,14 +31,14 @@ export class TaskDashboard implements OnInit {
   taskForm = new FormGroup({
     title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    status: new FormControl(TaskStatus.BACKLOG, { nonNullable: true })
+    statusId: new FormControl('', { nonNullable: true })
   });
 
   onSubmit(): void {
     if (this.taskForm.valid) {
-      const newTask: Task = this.taskForm.getRawValue() as Task;
+      const newTask: CreateTaskDTO = this.taskForm.getRawValue() as CreateTaskDTO;
       this.addTask(newTask);
-      this.taskForm.reset({ status: TaskStatus.BACKLOG });
+      this.taskForm.reset({ statusId: '' });
     }
   }
 
@@ -48,7 +48,7 @@ export class TaskDashboard implements OnInit {
     });
   }
 
-  onDeleteTask(id: number): void {
+  onDeleteTask(id: string): void {
     this.taskService.deleteTask(id).subscribe({
       next: () => {
         this.tasks.update((currentTasks) => currentTasks.filter(task => task.id !== id));
@@ -57,8 +57,8 @@ export class TaskDashboard implements OnInit {
     });
   }
 
-  changeStatus(id: number, newStatus: TaskStatus): void {
-    this.taskService.updateTaskStatus(id, newStatus).subscribe({
+  changeStatus(id: string, newStatusId: string): void {
+    this.taskService.updateTaskStatus(id, newStatusId).subscribe({
       next: updatedTask => {
         this.tasks.update((currentTasks) => currentTasks.map(task => task.id === id ? updatedTask : task));
       },

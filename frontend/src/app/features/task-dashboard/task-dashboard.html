@@ -17,11 +17,11 @@
             @if (task.id) {
             <button class="btn delete-btn" (click)="onDeleteTask(task.id)">Delete</button>
             }
-            @if (task.status === TaskStatus.BACKLOG) {
+            <!-- @if (task.status === TaskStatus.BACKLOG) {
             <button class="btn status-btn" (click)="changeStatus(task.id, TaskStatus.IN_PROGRESS)">Start work</button>
             } @else if ( task.status === TaskStatus.IN_PROGRESS) {
             <button class="btn status-btn done" (click)="changeStatus(task.id, TaskStatus.DONE)">Mark as Done</button>
-            }
+            } -->
             <span class="status">{{ task.status }}</span>
         </div>
     </article>

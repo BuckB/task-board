@@ -1,15 +1,23 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { Status } from '@domains/status/model/status.model';
+import { CreateTaskDTO } from '@domains/task/model/create-task.dto';
+import { Task } from '@domains/task/model/task.model';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { TaskStatus } from '../../models/task-status.enum';
-import { CreateTaskDTO, Task } from '../../models/task.model';
 import { TaskService } from './task.service';
 
 describe('TaskService', () => {
   const apiUrl = 'http://localhost:3000/tasks';
   let service: TaskService;
   let httpMock: HttpTestingController;
+
+  const mockStatus: Status = {
+    id: 'status-uuid-111',
+    name: 'TODO',
+    color: '#3b82f6',
+    orderIndex: 1,
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,10 +42,10 @@ describe('TaskService', () => {
 
   it('should fetch tasks from the backend', () => {
     const mockTasks: Task[] = [
-      { id: 1, title: 'Task 1', description: 'Description 1', status: TaskStatus.TODO },
-      { id: 2, title: 'Task 2', description: 'Description 2', status: TaskStatus.IN_PROGRESS }
+      { id: 'task-uuid-1', title: 'Task 1', description: 'Description 1', status: mockStatus },
+      { id: 'task-uuid-2', title: 'Task 2', description: 'Description 2', status: mockStatus }
     ];
-    service.getTasks().subscribe(tasks => {
+    service.getTasks().subscribe((tasks: Task[]) => {
       expect(tasks.length).toBe(2);
       expect(tasks).toEqual(mockTasks);
     });
@@ -48,8 +56,17 @@ describe('TaskService', () => {
   });
 
   it('should send a POST request to create a new task', () => {
-    const newTask: CreateTaskDTO = { title: 'TDD addTask', description: 'Testing POST', status: TaskStatus.TODO } as CreateTaskDTO;
-    const mockResponse: Task = { id: 99, ...newTask };
+    const newTask: CreateTaskDTO = {
+      title: 'TDD addTask',
+      description: 'Testing POST',
+      statusId: 'status-uuid-111'
+    };
+    const mockResponse: Task = {
+      id: 'task-uuid-1',
+      title: newTask.title,
+      description: newTask.description,
+      status: mockStatus
+    };
 
     service.createTask(newTask).subscribe((task: Task) => {
       expect(task).toEqual(mockResponse);
@@ -62,24 +79,30 @@ describe('TaskService', () => {
   });
 
   it('should send a DELETE request to the correct URL', () => {
-    const taskId = 1;
-
+    const taskId: string = 'task-uuid-1';
     service.deleteTask(taskId).subscribe();
-
     const req = httpMock.expectOne(`${apiUrl}/${taskId}`);
     expect(req.request.method).toBe('DELETE');
     req.flush(null); // Backend usually returns 204 No Content
   });
 
   it('should send a PATCH request to update a task status', () => {
-    const taskId = 99;
-    const updatedStatus = TaskStatus.IN_PROGRESS;
+    const taskId: string = 'task-uuid-1';
+    const newStatusId: string = 'status-uuid-2';
+    const updatedStatus: Status = { id: newStatusId, name: 'IN_PROGRESS', color: '#f59e0b', orderIndex: 2 };
+    const mockUpdatedTask: Task = {
+      id: taskId,
+      title: 'Test Task',
+      status: updatedStatus
+    };
 
-    service.updateTaskStatus(taskId, updatedStatus).subscribe();
+    service.updateTaskStatus(taskId, newStatusId).subscribe((task: Task) => {
+      expect(task).toEqual(mockUpdatedTask);
+    });
 
     const req = httpMock.expectOne(`${apiUrl}/${taskId}`);
     expect(req.request.method).toBe('PATCH');
-    expect(req.request.body).toEqual({ status: updatedStatus });
-    req.flush({ id: taskId, status: updatedStatus } as Task); // Resolve the request with mock data
+    expect(req.request.body).toEqual({ statusId: newStatusId });
+    req.flush(mockUpdatedTask); // Resolve the request with mock data
   });
 });

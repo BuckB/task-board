@@ -3,10 +3,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "strict": true,
     "target": "es2024",
     "module": "preserve",
     "isolatedModules": true,
-    "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -17,7 +17,13 @@
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules"
-    ]
+    ],
+    "rootDir": "./src",
+    "paths": {
+      "@core/*": ["./src/app/core/*"],
+      "@domains/*": ["./src/app/domains/*"],
+      "@features/*": ["./src/app/features/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

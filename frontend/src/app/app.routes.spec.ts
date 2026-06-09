@@ -3,7 +3,7 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { routes } from './app.routes';
-import { TaskDashboard } from './components/task-dashboard/task-dashboard';
+import { TaskDashboard } from './features/task-dashboard/task-dashboard';
 
 describe('App Routes', () => {
     let router: Router;

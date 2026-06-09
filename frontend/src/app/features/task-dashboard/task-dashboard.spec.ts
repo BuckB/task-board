@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Status } from '@domains/status/model/status.model';
+import { CreateTaskDTO } from '@domains/task/model/create-task.dto';
+import { Task } from '@domains/task/model/task.model';
+import { TaskService } from '@domains/task/services/task.service';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { TaskStatus } from '../../models/task-status.enum';
-import { CreateTaskDTO, Task } from '../../models/task.model';
-import { TaskService } from '../../services/task/task.service';
 import { TaskDashboard } from './task-dashboard';
 
 describe('TaskDashboard', () => {
@@ -11,13 +12,24 @@ describe('TaskDashboard', () => {
   let fixture: ComponentFixture<TaskDashboard>;
   let mockTaskService: any;
   let compiled: HTMLElement;
+  let mockedStatus: Status;
 
   beforeEach(async () => {
+    mockedStatus = {
+      id: 'status-uuid-123',
+      name: 'To Do',
+      color: '#ff0000',
+      orderIndex: 0
+    };
+
     mockTaskService = {
       getTasks: vi.fn().mockReturnValue(of([
-        { id: 1, title: 'Task 1', description: 'Description 1', status: 'To Do' },
-        { id: 2, title: 'Task 2', description: 'Description 2', status: 'In Progress' }
+        { id: 1, title: 'Task 1', description: 'Description 1', status: mockedStatus },
+        { id: 2, title: 'Task 2', description: 'Description 2', status: mockedStatus }
       ])),
+      createTask: vi.fn(),
+      deleteTask: vi.fn(),
+      updateTaskStatus: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -60,8 +72,8 @@ describe('TaskDashboard', () => {
 
   it('should call createTask on the service and add the new task to the list', () => {
     // Arrange
-    const newTask: CreateTaskDTO = { title: 'TDD addTask', description: 'Testing POST', status: TaskStatus.TODO } as CreateTaskDTO;
-    const savedTask: Task = { id: 99, ...newTask };
+    const newTask: CreateTaskDTO = { title: 'TDD addTask', description: 'Testing POST', statusId: 'status-uuid-123' } as CreateTaskDTO;
+    const savedTask: Task = { id: '99', title: newTask.title, description: newTask.description, status: mockedStatus } as Task;
 
     mockTaskService.createTask = vi.fn().mockReturnValue(of(savedTask));
 
@@ -91,25 +103,26 @@ describe('TaskDashboard', () => {
 
   it('should remove a task from the list when deleted', () => {
     // Setup: Component already has 1 task
-    component.tasks.set([{ id: 1, title: 'Delete Me', description: 'I am a task to be deleted', status: TaskStatus.TODO }]);
+    component.tasks.set([{ id: '1', title: 'Delete Me', description: 'I am a task to be deleted', status: mockedStatus } as Task]);
     mockTaskService.deleteTask = vi.fn().mockReturnValue(of(null));
 
     // Act
-    component.onDeleteTask(1);
+    component.onDeleteTask('1');
 
     // Assert
-    expect(mockTaskService.deleteTask).toHaveBeenCalledWith(1);
+    expect(mockTaskService.deleteTask).toHaveBeenCalledWith('1');
     expect(component.tasks().length).toBe(0);
   });
 
   it('should update task status in the list', () => {
-    const taskId = 123;
-    component.tasks.set([{ id: taskId, title: 'Test', description: 'This is a test', status: TaskStatus.TODO }]);
+    const taskId = '123';
+    const mockUpdatedStatus: Status = { id: 'status-uuid-456', name: 'Done', color: '#00ff00', orderIndex: 2 } as Status;
+    component.tasks.set([{ id: taskId, title: 'Test', description: 'This is a test', status: mockedStatus }]);
 
-    mockTaskService.updateTaskStatus = vi.fn().mockReturnValue(of({ id: taskId, status: TaskStatus.DONE }));
+    mockTaskService.updateTaskStatus = vi.fn().mockReturnValue(of({ id: taskId, statusId: mockUpdatedStatus.id }));
 
-    component.changeStatus(taskId, TaskStatus.DONE);
+    component.changeStatus(taskId, mockUpdatedStatus.id);
 
-    expect(component.tasks()[0].status).toBe(TaskStatus.DONE);
+    expect(component.tasks()[0].status).toBe(mockUpdatedStatus);
   });
 });

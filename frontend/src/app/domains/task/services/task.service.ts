@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { CreateTaskDTO } from '@domains/task/model/create-task.dto';
+import { Task } from '@domains/task/model/task.model';
 import { Observable } from 'rxjs/internal/Observable';
-import { CreateTaskDTO, Task } from '../../models/task.model';
-import { TaskStatus } from '../../models/task-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -16,15 +16,15 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
-  createTask(task: CreateTaskDTO): Observable<Task> {
-    return this.http.post<Task>(this.apiUrl, task);
+  createTask(taskDTO: CreateTaskDTO): Observable<Task> {
+    return this.http.post<Task>(this.apiUrl, taskDTO);
   }
 
-  deleteTask(id: number): Observable<void> {
+  deleteTask(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  updateTaskStatus(id: number, status: TaskStatus): Observable<Task> {
-    return this.http.patch<Task>(`${this.apiUrl}/${id}`, { status });
+  updateTaskStatus(id: string, statusId: string): Observable<Task> {
+    return this.http.patch<Task>(`${this.apiUrl}/${id}`, { statusId });
   }
 }
