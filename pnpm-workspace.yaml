@@ -3,8 +3,8 @@ packages:
   - backend
 
 allowBuilds:
-  '@nestjs/core': true
-  '@parcel/watcher': true
+  "@nestjs/core": true
+  "@parcel/watcher": true
   es5-ext: set this to true or false
   esbuild: true
   fsevents: set this to true or false
@@ -15,22 +15,33 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - hono@4.12.18
+  - esbuild@0.28.1
+  - form-data@4.0.6
+  - vite@7.3.5
+  - js-yaml@3.15.0 || 4.1.2
+  - "@babel/core@7.29.1"
+  - multer@2.2.0
+  - piscina@5.1.5
+  - '@nestjs/common@11.1.28'
+  - '@types/node@26.1.1'
 
 onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
+  - "@nestjs/core"
+  - "@parcel/watcher"
   - lmdb
   - unrs-resolver
 overrides:
-  ajv@>=7.0.0-alpha.0 <8.18.0: '>=8.18.0'
-  brace-expansion@<5.0.5: '>=5.0.5'
-  file-type@>=13.0.0 <=21.3.1: '>=21.3.2'
-  handlebars@>=4.0.0 <4.7.9: '>=4.7.9'
-  hono@<4.12.14: '>=4.12.14'
-  ip-address@<=10.1.0: '>=10.1.1'
-  lodash@<=4.17.23: '>=4.18.0'
-  path-to-regexp@>=8.0.0 <8.4.0: '>=8.4.0'
-  picomatch@<2.3.2: '>=2.3.2'
-  picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
-  postcss@<8.5.10: '>=8.5.10'
-  undici@>=7.0.0 <7.24.0: '>=7.24.0'
+  ajv@>=7.0.0-alpha.0 <8.18.0: ">=8.18.0"
+  brace-expansion@<5.0.5: ">=5.0.5"
+  file-type@>=13.0.0 <=21.3.1: ">=21.3.2"
+  handlebars@>=4.0.0 <4.7.9: ">=4.7.9"
+  hono@<4.12.14: ">=4.12.14"
+  ip-address@<=10.1.0: ">=10.1.1"
+  lodash@<=4.17.23: ">=4.18.0"
+  path-to-regexp@>=8.0.0 <8.4.0: ">=8.4.0"
+  picomatch@<2.3.2: ">=2.3.2"
+  picomatch@>=4.0.0 <4.0.4: ">=4.0.4"
+  postcss@<8.5.10: ">=8.5.10"
+  undici@>=7.0.0 <7.24.0: ">=7.24.0"
+  "@nestjs/common@>=11.1.27 <12.0.0-0": "11.1.28"
+  "@types/node@>=26.0.0 <27.0.0-0": "26.1.1"

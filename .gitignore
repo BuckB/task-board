@@ -23,6 +23,7 @@ bazel-out/
 .idea/
 *.swp
 *.swo
+.zed/
 
 # --- Infrastructure / Databases ---
 data/
